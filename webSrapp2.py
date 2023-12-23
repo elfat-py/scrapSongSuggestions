@@ -19,31 +19,51 @@ import requests
 #             if titles_td:
 #                 title = titles_td.get('title')
 #                 print(title)
+song = 'losing interest'
 
-htmlHomePage = requests.get("https://songslikex.com/").text
+initialLink = 'https://songslikex.com/'
+
+urlWithSearchValue = f"{initialLink}?song={song}"
+
+htmlHomePage = requests.get(urlWithSearchValue).text  # "https://songslikex.com/"
 soup = BeautifulSoup(htmlHomePage, 'lxml')
 
 
 full_body = soup.find_all('div', class_='full')
-#print(full_body)
 
 #fullCenter = full_body.find('div', class_='m-b full center')
+def findSearchBar(userInput):
+    for content in full_body:
+        fullCenter = content.find_all('div', class_='m-b-m full center')
+        for button in fullCenter:
+            searchButton = button.find(id='songSearchForm')
+            if searchButton:
+                searchPlace = searchButton.find('div', class_='async-search')
+                if searchPlace:
+                    inputElement = searchPlace.find('input', id='songSearch')
+                    inputElement['value'] = userInput  # Here we will pass the user input
+                    #print(inputElement)
+                    #print(f"The updated value: {inputElement['value']}")
+                    if inputElement['value'] == userInput:
+                        for songSuggest in fullCenter:
+                            songSuggestionsList = songSuggest.find_all('ul', class_='song-results left pad-m')
+                            if songSuggestionsList:
+                                for songList in songSuggestionsList:
+                                    songs = songList.find_all('li', class_='song')
+                                    for song in songs:
+                                        title_tag = song.find_all('a')
+                                        for songTitleA in title_tag:
+                                            songTitle = songTitleA.find('span')
+                                            print(songTitle.text.strip())
 
-for content in full_body:
-    fullCenter = content.find_all('div', class_='m-b-m full center')
-    for button in fullCenter:
-        searchButton = button.find(id='songSearchForm')
-        if searchButton:
-            searchPlace = searchButton.find('div', class_='async-search')
-            if searchPlace:
-                inputElement = searchPlace.find('input', id='songSearch')
-                inputElement['value'] = 'Losing interest'  # Here we will pass the user input
-                print(f"The updated value: {inputElement['value']}")
+                                    #print(songList)
 
-        # for searchPlaceHolder in searchButton:
-        #     searchPlace = searchPlaceHolder.find('div', class_='async-search')
-        #     print(searchPlace)
+            # for searchPlaceHolder in searchButton:
+            #     searchPlace = searchPlaceHolder.find('div', class_='async-search')
+            #     print(searchPlace)
 
+
+findSearchBar(song)
 
 searching = soup.find(id='SongSearchForm')
 #print(searching)
