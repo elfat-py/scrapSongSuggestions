@@ -6,6 +6,8 @@ Created a simple web scrapping tool that returns a list of songs based on a prov
   -"Beautiful Soup" library, the pip command is: 'pip install beautifulsoup4'
   -"Requests" library, the pip command is: 'pip install requests'
 
+The file is located in the master branch
+
 To clone the project use: git clone <repo-url>
 
 
